@@ -17,11 +17,13 @@ claudius_img = pygame.image.load('static/claudius.png')  # Replace with the corr
 hamlet_img = pygame.image.load('static/hamlet.png')      # Replace with the correct path to your image
 rosen_img = pygame.image.load('static/rosen.png')
 captain_img = pygame.image.load('static/captain.png')
+castle_img = pygame.image.load('static/castle.png')
 
 claudius_img = pygame.transform.scale(claudius_img, (100, 200))  # Resize to 100x100 pixels
 hamlet_img = pygame.transform.scale(hamlet_img, (125, 200)) 
 rosen_img = pygame.transform.scale(rosen_img, (200, 200)) 
 captain_img = pygame.transform.scale(captain_img, (180, 300)) 
+castle_img = pygame.transform.scale(castle_img, (600, 600)) 
 
 claudius_img2 = pygame.transform.scale(claudius_img, (75, 150))  # Resize to 100x100 pixels
 rosen_img2 = pygame.transform.scale(rosen_img, (150, 200)) 
@@ -284,9 +286,11 @@ while running:
         draw_tiled_grass(screen, camera, outdoor_map_size)
 
         pygame.draw.rect(screen, BLACK, castledoor.move(-camera.x, -camera.y))
-        pygame.draw.rect(screen, BROWN, castle.move(-camera.x, -camera.y))
+        #pygame.draw.rect(screen, BROWN, castle.move(-camera.x, -camera.y))
         pygame.draw.rect(screen, BROWN, fortinbras.move(-camera.x, -camera.y))
         screen.blit(captain_img, (outdoor_map_size - 220 - camera.x, outdoor_map_size // 2 - 170- camera.y))
+        screen.blit(captain_img, (outdoor_map_size - 220 - camera.x, outdoor_map_size // 2 - 170- camera.y))
+        screen.blit(castle_img, (outdoor_map_size // 2 - 500 - camera.x, outdoor_map_size // 2 - 500- camera.y))
 
     draw_lives(screen, lives)
 
