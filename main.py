@@ -19,7 +19,7 @@ rosen_img = pygame.image.load('static/rosen.png')
 captain_img = pygame.image.load('static/captain.png')
 
 claudius_img = pygame.transform.scale(claudius_img, (100, 200))  # Resize to 100x100 pixels
-hamlet_img = pygame.transform.scale(hamlet_img, (200, 200)) 
+hamlet_img = pygame.transform.scale(hamlet_img, (150, 200)) 
 rosen_img = pygame.transform.scale(rosen_img, (200, 200)) 
 captain_img = pygame.transform.scale(captain_img, (300, 300)) 
 
@@ -52,14 +52,17 @@ YELLOW = (255, 255, 0)
 # Load images
 grass_image = pygame.image.load("static/grass.png")
 grass_tile_size = grass_image.get_width()  # Assuming the image is square
+floor_image = pygame.image.load("static/floor.png")
+floor_image = pygame.transform.scale(floor_image, (400, 400)) 
+floor_tile_size = floor_image.get_width()  # Assuming the image is square
 
 # Player setup
 player_width = 20
 player_height = 20
 player_speed = 1
 player = pygame.Rect(screen_width // 2, screen_height // 2, player_width, player_height)
-player_img = pygame.image.load('static/rosen.png')
-player_img = pygame.transform.scale(player_img, (100, 100)) 
+player_img = pygame.image.load('static/hamlet.png')
+player_img = pygame.transform.scale(player_img, (100, 168)) 
 
 # Maps
 castle_map_size = 1200
@@ -75,7 +78,7 @@ claudius_position = (castle_map_size // 2 - 25, castle_map_size // 2 - 25)  # Ce
 claudius_size = 40
 claudius = pygame.Rect(*claudius_position, claudius_size, claudius_size)
 
-rosen_position = (castle_map_size // 2 + 10, castle_map_size // 2 - 25)  # Center of the castle
+rosen_position = (castle_map_size // 2 + 40, castle_map_size // 2 - 25)  # Center of the castle
 rosen_size = 40
 rosen = pygame.Rect(*rosen_position, rosen_size, rosen_size)
 
@@ -122,6 +125,16 @@ def draw_tiled_grass(surface, camera, map_size):
     for x in range(start_x, end_x, grass_tile_size):
         for y in range(start_y, end_y, grass_tile_size):
             surface.blit(grass_image, (x - camera.x, y - camera.y))
+
+def draw_tiled_floor(surface, camera, map_size):
+    start_x = max(0, camera.x // floor_tile_size * floor_tile_size)
+    start_y = max(0, camera.y // floor_tile_size * floor_tile_size)
+    end_x = min(map_size, (camera.x + screen_width) // floor_tile_size * floor_tile_size + floor_tile_size)
+    end_y = min(map_size, (camera.y + screen_height) // floor_tile_size * floor_tile_size + floor_tile_size)
+    
+    for x in range(start_x, end_x, floor_tile_size):
+        for y in range(start_y, end_y, floor_tile_size):
+            surface.blit(floor_image, (x - camera.x, y - camera.y))
 
 # Function to draw dialogue
 def draw_dialogue(dialogue, index):
@@ -203,7 +216,7 @@ while running:
         if keys[K_DOWN]:
             player.y += player_speed
 
-    if player.colliderect(castle) :
+    if player.colliderect(castle) and current_map == 'outdoor':
         if keys[K_LEFT]:
             player.x += player_speed
         if keys[K_RIGHT]:
@@ -256,15 +269,18 @@ while running:
     # Draw map
     screen.fill(BLACK)
     if current_map == "castle":
-        pygame.draw.rect(screen, BROWN, (0 - camera.x, 0 - camera.y, castle_map_size, castle_map_size))
+        #pygame.draw.rect(screen, BROWN, (0 - camera.x, 0 - camera.y, castle_map_size, castle_map_size))
+        pygame.draw.rect(screen, BROWN, claudius.move(-camera.x, -camera.y))  # Draw Claudius
+        pygame.draw.rect(screen, BROWN, rosen.move(-camera.x, -camera.y))  # Draw Rosencrantz
+        draw_tiled_floor(screen, camera, castle_map_size)
         pygame.draw.rect(screen, BLACK, door.move(-camera.x, -camera.y))
-        pygame.draw.rect(screen, BLUE, claudius.move(-camera.x, -camera.y))  # Draw Claudius
-        pygame.draw.rect(screen, PURPLE, rosen.move(-camera.x, -camera.y))  # Draw Rosencrantz
 
-        screen.blit(claudius_img2, (castle_map_size // 2 - 45 - camera.x, castle_map_size // 2 - 75 - camera.y))
-        screen.blit(rosen_img2, (castle_map_size // 2 - 30 - camera.x, castle_map_size // 2 - 75 - camera.y))
+
+        screen.blit(claudius_img2, (castle_map_size // 2 - 45 - camera.x, castle_map_size // 2 - 80 - camera.y))
+        screen.blit(rosen_img2, (castle_map_size // 2 - 15 - camera.x, castle_map_size // 2 - 100 - camera.y))
     elif current_map == "outdoor":
         draw_tiled_grass(screen, camera, outdoor_map_size)
+
         pygame.draw.rect(screen, BLACK, castledoor.move(-camera.x, -camera.y))
         pygame.draw.rect(screen, BROWN, castle.move(-camera.x, -camera.y))
         pygame.draw.rect(screen, BROWN, fortinbras.move(-camera.x, -camera.y))
@@ -273,6 +289,8 @@ while running:
 
     # Draw player
     pygame.draw.rect(screen, RED, player.move(-camera.x, -camera.y))
+    screen.blit(player_img, (screen_width // 2 - 50, screen_height // 2 - 50))
+
 
     # Draw cutscene if active
     if in_cutscene:
