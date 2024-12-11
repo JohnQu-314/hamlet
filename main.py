@@ -19,9 +19,9 @@ rosen_img = pygame.image.load('static/rosen.png')
 captain_img = pygame.image.load('static/captain.png')
 
 claudius_img = pygame.transform.scale(claudius_img, (100, 200))  # Resize to 100x100 pixels
-hamlet_img = pygame.transform.scale(hamlet_img, (150, 200)) 
+hamlet_img = pygame.transform.scale(hamlet_img, (125, 200)) 
 rosen_img = pygame.transform.scale(rosen_img, (200, 200)) 
-captain_img = pygame.transform.scale(captain_img, (300, 300)) 
+captain_img = pygame.transform.scale(captain_img, (180, 300)) 
 
 claudius_img2 = pygame.transform.scale(claudius_img, (75, 150))  # Resize to 100x100 pixels
 rosen_img2 = pygame.transform.scale(rosen_img, (150, 200)) 
@@ -82,9 +82,11 @@ rosen_position = (castle_map_size // 2 + 40, castle_map_size // 2 - 25)  # Cente
 rosen_size = 40
 rosen = pygame.Rect(*rosen_position, rosen_size, rosen_size)
 
-fortinbras_position = (outdoor_map_size - 100, outdoor_map_size // 2 - 25)  # Center of the castle
-fortinbras_size = 30
+fortinbras_position = (outdoor_map_size - 150, outdoor_map_size // 2 - 75)  # Center of the castle
+fortinbras_size = 50
 fortinbras = pygame.Rect(*fortinbras_position, fortinbras_size, fortinbras_size)
+
+
 
 current_dialogue_index = 0
 in_cutscene = False
@@ -158,7 +160,7 @@ def draw_dialogue(dialogue, index):
             screen.blit(rosen_img, (screen.get_width() - rosen_img.get_width() - 20, screen.get_height() - hamlet_img.get_height() - 150))
         elif line["character"] == "Captain":
             # Display Hamlet's image in the bottom-right corner
-            screen.blit(captain_img, (screen.get_width() - captain_img.get_width() - 20, screen.get_height() - captain_img.get_height() - 150))
+            screen.blit(captain_img, (screen.get_width() - captain_img.get_width() - 30, screen.get_height() - captain_img.get_height() - 150))
 
         
 
@@ -248,7 +250,7 @@ while running:
 
 
 
-    if current_map == "outdoor" and not inyap and player.colliderect(fortinbras): #and claudiusyap:
+    if current_map == "outdoor" and not inyap and player.colliderect(fortinbras) and claudiusyap:
             inyap = True
             current_dialogue_index = 0
 
@@ -284,6 +286,7 @@ while running:
         pygame.draw.rect(screen, BLACK, castledoor.move(-camera.x, -camera.y))
         pygame.draw.rect(screen, BROWN, castle.move(-camera.x, -camera.y))
         pygame.draw.rect(screen, BROWN, fortinbras.move(-camera.x, -camera.y))
+        screen.blit(captain_img, (outdoor_map_size - 220 - camera.x, outdoor_map_size // 2 - 170- camera.y))
 
     draw_lives(screen, lives)
 
